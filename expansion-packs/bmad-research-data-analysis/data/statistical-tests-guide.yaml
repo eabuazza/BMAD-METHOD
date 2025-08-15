@@ -1,0 +1,289 @@
+# Statistical Tests Selection Guide
+
+# This guide helps researchers select appropriate statistical tests based on their data characteristics and research questions
+
+data_types:
+  continuous:
+    description: "Numerical data that can take any value within a range (height, weight, age)"
+    characteristics:
+      - "Measured on interval or ratio scale"
+      - "Can be divided into smaller units"
+      - "Mathematical operations meaningful"
+    examples: ["height", "weight", "blood pressure", "test scores", "reaction time"]
+  
+  categorical:
+    description: "Data that falls into distinct categories or groups"
+    ordinal:
+      description: "Categories with natural order or ranking"
+      examples: ["education level", "income brackets", "survey ratings", "disease severity"]
+    nominal:
+      description: "Categories without natural order"
+      examples: ["gender", "race/ethnicity", "treatment groups", "blood type"]
+  
+  time_to_event:
+    description: "Time until an event occurs (survival analysis)"
+    characteristics:
+      - "Includes censored observations"
+      - "Focus on time until event"
+      - "May have competing risks"
+    examples: ["time to death", "time to disease recurrence", "time to treatment failure"]
+
+statistical_tests:
+  descriptive_statistics:
+    continuous_data:
+      normal_distribution:
+        measures: ["mean ± standard deviation", "95% confidence interval"]
+        when_to_use: "Data follows normal distribution"
+        assumptions: ["normality", "no extreme outliers"]
+      
+      non_normal_distribution:
+        measures: ["median (interquartile range)", "min-max range"]
+        when_to_use: "Data is skewed or has outliers"
+        assumptions: ["no assumptions about distribution"]
+    
+    categorical_data:
+      measures: ["frequencies", "percentages", "proportions"]
+      presentation: "n (%) format"
+      confidence_intervals: "95% CI for proportions when appropriate"
+
+  comparative_tests:
+    two_groups:
+      continuous_outcome:
+        parametric:
+          test_name: "Independent t-test (Student's t-test)"
+          when_to_use: "Comparing means of two independent groups"
+          assumptions:
+            - "Normal distribution in both groups"
+            - "Equal variances (homoscedasticity)"
+            - "Independent observations"
+          alternatives:
+            unequal_variances: "Welch's t-test"
+            paired_data: "Paired t-test"
+        
+        non_parametric:
+          test_name: "Mann-Whitney U test (Wilcoxon rank-sum)"
+          when_to_use: "Non-normal data or ordinal outcomes"
+          assumptions:
+            - "Independent observations"
+            - "Similar distribution shapes for mean rank comparison"
+          paired_alternative: "Wilcoxon signed-rank test"
+      
+      categorical_outcome:
+        test_name: "Chi-square test of independence"
+        when_to_use: "Comparing proportions between two groups"
+        assumptions:
+          - "Expected cell counts ≥ 5"
+          - "Independent observations"
+        alternatives:
+          small_samples: "Fisher's exact test"
+          ordered_categories: "Chi-square test for trend"
+    
+    multiple_groups:
+      continuous_outcome:
+        parametric:
+          test_name: "One-way ANOVA"
+          when_to_use: "Comparing means across 3+ groups"
+          assumptions:
+            - "Normal distribution in all groups"
+            - "Equal variances across groups"
+            - "Independent observations"
+          post_hoc: ["Tukey's HSD", "Bonferroni", "Holm-Sidak"]
+        
+        non_parametric:
+          test_name: "Kruskal-Wallis test"
+          when_to_use: "Non-normal data or ordinal outcomes"
+          post_hoc: "Dunn's multiple comparisons test"
+      
+      categorical_outcome:
+        test_name: "Chi-square test of independence"
+        when_to_use: "Comparing proportions across 3+ groups"
+        post_hoc: "Pairwise chi-square with Bonferroni correction"
+
+  relationship_tests:
+    correlation:
+      continuous_variables:
+        parametric:
+          test_name: "Pearson correlation coefficient"
+          when_to_use: "Linear relationship between continuous variables"
+          assumptions:
+            - "Both variables normally distributed"
+            - "Linear relationship"
+            - "Homoscedasticity"
+          interpretation:
+            - "r = 0.1-0.3: small effect"
+            - "r = 0.3-0.5: medium effect"
+            - "r = 0.5+: large effect"
+        
+        non_parametric:
+          test_name: "Spearman correlation coefficient"
+          when_to_use: "Non-linear monotonic relationships or ordinal data"
+          assumptions: ["Monotonic relationship"]
+    
+    regression:
+      simple_linear:
+        test_name: "Simple linear regression"
+        when_to_use: "Predicting continuous outcome from one predictor"
+        assumptions:
+          - "Linear relationship"
+          - "Normal distribution of residuals"
+          - "Homoscedasticity"
+          - "Independent observations"
+      
+      multiple_linear:
+        test_name: "Multiple linear regression"
+        when_to_use: "Predicting continuous outcome from multiple predictors"
+        additional_assumptions:
+          - "No multicollinearity"
+          - "No influential outliers"
+        diagnostics: ["residual plots", "VIF values", "Cook's distance"]
+      
+      logistic:
+        test_name: "Logistic regression"
+        when_to_use: "Predicting binary outcome"
+        assumptions:
+          - "Linear relationship between predictors and log-odds"
+          - "No multicollinearity"
+          - "Large sample size"
+
+  repeated_measures:
+    continuous_outcome:
+      parametric:
+        test_name: "Repeated measures ANOVA"
+        when_to_use: "Same subjects measured multiple times"
+        assumptions:
+          - "Normality"
+          - "Sphericity (or use correction)"
+        alternatives: "Mixed effects models"
+      
+      non_parametric:
+        test_name: "Friedman test"
+        when_to_use: "Non-normal repeated measures"
+        post_hoc: "Wilcoxon signed-rank with Bonferroni"
+
+  survival_analysis:
+    basic_survival:
+      test_name: "Kaplan-Meier survival analysis"
+      when_to_use: "Estimating survival probabilities over time"
+      comparison_test: "Log-rank test"
+    
+    regression:
+      test_name: "Cox proportional hazards regression"
+      when_to_use: "Adjusting for covariates in survival analysis"
+      assumptions: ["Proportional hazards"]
+
+sample_size_considerations:
+  small_samples:
+    threshold: "n < 30 per group"
+    considerations:
+      - "Non-parametric tests often preferred"
+      - "Exact tests may be needed"
+      - "Bootstrap methods useful"
+      - "Effect size estimates less reliable"
+  
+  large_samples:
+    threshold: "n > 1000"
+    considerations:
+      - "Statistical significance vs clinical significance"
+      - "Small effects may be statistically significant"
+      - "Focus on confidence intervals and effect sizes"
+
+effect_size_measures:
+  continuous_outcomes:
+    cohens_d:
+      interpretation:
+        - "0.2: small effect"
+        - "0.5: medium effect"
+        - "0.8: large effect"
+    
+    eta_squared:
+      description: "Proportion of variance explained in ANOVA"
+      interpretation:
+        - "0.01: small effect"
+        - "0.06: medium effect"
+        - "0.14: large effect"
+  
+  categorical_outcomes:
+    odds_ratio:
+      description: "Ratio of odds in exposed vs unexposed"
+      interpretation:
+        - "OR = 1: no association"
+        - "OR > 1: positive association"
+        - "OR < 1: negative association"
+    
+    relative_risk:
+      description: "Ratio of risks in exposed vs unexposed"
+      when_to_use: "Cohort studies and RCTs"
+
+multiple_testing:
+  problem_description: "Increased Type I error rate with multiple comparisons"
+  
+  correction_methods:
+    bonferroni:
+      description: "Divide alpha by number of comparisons"
+      when_to_use: "Conservative approach, few comparisons"
+      limitations: "Very conservative, increases Type II error"
+    
+    benjamini_hochberg:
+      description: "False Discovery Rate (FDR) control"
+      when_to_use: "Many comparisons, exploratory analysis"
+      advantages: "Less conservative than Bonferroni"
+    
+    holm_sidak:
+      description: "Step-down procedure"
+      when_to_use: "Good balance between Type I and II errors"
+
+missing_data:
+  mechanisms:
+    mcar: "Missing Completely at Random"
+    mar: "Missing at Random"
+    mnar: "Missing Not at Random"
+  
+  handling_methods:
+    complete_case:
+      description: "Exclude cases with missing data"
+      when_appropriate: "MCAR mechanism, small proportion missing"
+    
+    multiple_imputation:
+      description: "Create multiple imputed datasets"
+      when_appropriate: "MAR mechanism, moderate missing data"
+    
+    maximum_likelihood:
+      description: "Use all available data"
+      when_appropriate: "MAR mechanism, structural equation models"
+
+assumptions_testing:
+  normality:
+    tests: ["Shapiro-Wilk", "Kolmogorov-Smirnov", "Anderson-Darling"]
+    visual: ["Q-Q plots", "histograms", "box plots"]
+    sample_size_considerations: "Large samples: use visual inspection"
+  
+  equal_variances:
+    tests: ["Levene's test", "Bartlett's test"]
+    robust_alternatives: "Welch's tests, non-parametric methods"
+  
+  independence:
+    considerations: ["Study design", "clustering", "repeated measures"]
+    solutions: ["Mixed effects models", "GEE", "cluster-robust SEs"]
+
+reporting_guidelines:
+  general_principles:
+    - "Report exact p-values (not just 'p < 0.05')"
+    - "Always include confidence intervals"
+    - "Report effect sizes with interpretation"
+    - "Describe assumption checking"
+    - "Report all analyses conducted"
+  
+  statistical_symbols:
+    - "Use italics for statistical symbols (p, r, t, F, etc.)"
+    - "Report degrees of freedom for test statistics"
+    - "Use appropriate number of decimal places"
+
+software_recommendations:
+  r_packages:
+    basic_stats: ["base R", "stats package"]
+    advanced: ["lme4", "survival", "psych", "car"]
+    visualization: ["ggplot2", "lattice"]
+  
+  other_software:
+    commercial: ["SPSS", "SAS", "Stata"]
+    specialized: ["MPlus", "JASP", "jamovi"]

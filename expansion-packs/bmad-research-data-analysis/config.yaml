@@ -1,0 +1,10 @@
+name: bmad-research-data-analysis
+version: 1.0.0
+short-title: Research Data Analysis & Scientific Writing Pack
+description: >-
+  This expansion pack extends BMad Method with comprehensive research data analysis
+  and scientific paper writing capabilities. It provides specialized AI agents for
+  statistical analysis, data visualization, literature review, methodology design,
+  and academic writing across all scientific disciplines.
+author: BMad Method Community
+slashPrefix: bmadResearch
